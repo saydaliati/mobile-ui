@@ -1,9 +1,10 @@
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import { BottomTabBar } from '@react-navigation/bottom-tabs';
 import { Tabs } from 'expo-router';
 
 export default function TabLayout() {
   return (
-    <Tabs>
+    <Tabs initialRouteName="index" screenOptions={{ headerShown: false }} > 
       <Tabs.Screen
         name="index"
         options={{
@@ -26,9 +27,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="login"
         options={{
-          title: 'Profile',
+          title: 'Get in',
           tabBarIcon: ({ color }) => <IconSymbol name="person" color={color} />,
         }}
       />
