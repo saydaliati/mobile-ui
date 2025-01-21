@@ -1,23 +1,34 @@
-import { Text, View, Pressable, Switch } from "react-native";
+import { Text, View, Pressable, Switch, Alert } from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
 import { useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { logoutUser } from "@/store/actions/AuthActions";
 
 export default function SettingsScreen() {
-  const [isAuthenticated, setIsAuthenticated] = useState(true); // Simulate auth state
-  const [isDarkTheme, setIsDarkTheme] = useState(false); // Theme toggle state
+  const isAuthenticated = useAppSelector((state:any) => state.auth.isAuthenticated);
+  const [isDarkTheme, setIsDarkTheme] = useState(false); 
+    const dispatch = useAppDispatch();
+  
 
   const toggleTheme = () => {
     setIsDarkTheme(!isDarkTheme);
     // Implement theme change logic here
   };
 
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    // Implement logout logic here
+  const handleLogout = async () => {
+    try {
+          await dispatch(logoutUser());
+          router.replace("/(tabs)");
+        } catch (error:any) {
+          Alert.alert(
+            "Logout Failed",
+            error.message || "An unexpected error occurred. Please try again."
+          );
+        }
   };
 
   return (

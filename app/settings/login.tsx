@@ -7,92 +7,134 @@ import {
   ActivityIndicator,
   Image,
   SafeAreaView,
+  Alert,
 } from "react-native";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { login } from "@/store/slices/authSlice";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
+import { loginUser } from "@/store/actions/AuthActions";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [validationError, setValidationError] = useState("");
 
   const dispatch = useAppDispatch();
-  const { isLoading, error } = useAppSelector((state) => state.auth);
+  const { loading, error } = useAppSelector((state) => state.auth);
 
-  const handleLogin = async () => {
+  const validateForm = () => {
+    setValidationError("");
+    
     if (!email || !password) {
-      // You might want to add local form validation here
-      return;
+      setValidationError("Email and password are required");
+      return false;
     }
 
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setValidationError("Please enter a valid email address");
+      return false;
+    }
+
+    // Basic password validation
+    if (password.length < 6) {
+      setValidationError("Password must be at least 6 characters");
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleLogin = async () => {
+    if (!validateForm()) return;
+
     try {
-      await dispatch(login({ email, password })).unwrap();
-    } catch (err) {
-      // Error handling is managed by Redux
+      await dispatch(loginUser({ email, password }));
+      router.replace("/(tabs)");
+    } catch (error:any) {
+      Alert.alert(
+        "Login Failed",
+        error.message || "An unexpected error occurred. Please try again."
+      );
     }
   };
 
   return (
-    <ThemedView className="flex-1 h-full  p-6 justify-between items-center">
+    <ThemedView className="flex-1 h-full dark:bg-black p-6 justify-between items-center">
       <Image
-        className="w-full h-28 "
+        className="w-full h-28"
         source={require("@/assets/images/saydaliyati-logo.png")}
+        resizeMode="contain"
       />
 
-      <ThemedView className="space-y-4 w-full m-4">
+      <View className="space-y-4 w-full m-4">
         <ThemedText className="text-2xl dark:text-[#0EBE8F] font-poppins font-bold uppercase text-center">
-          Welcome back !
+          Welcome back!
         </ThemedText>
+        
         <ThemedText className="dark:text-white font-poppins text-sm text-center">
           Find pharmacies and access care with Saydaliati!
         </ThemedText>
+
         <TextInput
-          className="w-full px-4 dark:text-white py-3 border border-gray-300 rounded-lg"
+          className="w-full px-4 dark:text-white py-3 border border-gray-300 dark:border-gray-700 rounded-lg"
           placeholder="Email"
+          placeholderTextColor="#666"
           value={email}
-          onChangeText={setEmail}
+          onChangeText={(text) => {
+            setEmail(text);
+            setValidationError("");
+          }}
           autoCapitalize="none"
           keyboardType="email-address"
+          editable={!loading}
         />
 
         <TextInput
-
-          className="w-full px-4 py-3 dark:text-white border border-gray-300 rounded-lg"
+          className="w-full px-4 py-3 dark:text-white border border-gray-300 dark:border-gray-700 rounded-lg"
           placeholder="Password"
+          placeholderTextColor="#666"
           value={password}
-          onChangeText={setPassword}
+          onChangeText={(text) => {
+            setPassword(text);
+            setValidationError("");
+          }}
           secureTextEntry
+          editable={!loading}
         />
 
         <ThemedView className="flex-row self-end justify-between mt-4">
-          <Link href="./register" className="text-[#0EBE8F] font-poppins  ">
-            Forgot Password ?
+          <Link href="/" className="text-[#0EBE8F] font-poppins">
+            Forgot Password?
           </Link>
-          {/* <Link href="/forgot-password" className="text-blue-500">
-            Forgot password?
-          </Link> */}
         </ThemedView>
 
-        {error && <Text className="text-red-500 text-center">{error}</Text>}
+        {(validationError || error) && (
+          <Text className="text-red-500 text-center">
+            {validationError || error}
+          </Text>
+        )}
 
         <TouchableOpacity
-          className="w-full  rounded-full bg-[#0EBE8F] py-3 "
+          className={`w-full rounded-full py-3 ${
+            loading ? "bg-[#0EBE8F]/70" : "bg-[#0EBE8F]"
+          }`}
           onPress={handleLogin}
-          disabled={isLoading}
+          disabled={loading}
         >
-          {isLoading ? (
+          {loading ? (
             <ActivityIndicator color="white" />
           ) : (
             <Text className="text-white text-center font-semibold">Login</Text>
           )}
         </TouchableOpacity>
-      </ThemedView>
+      </View>
 
-      <View className="mb-4 ">
-        <Link href="./register" className="text-[#0EBE8F]">
-          Don't have an account yet ? Join us
+      <View className="mb-4">
+        <Link href="./register" className="text-[#0EBE8F] font-poppins">
+          Don't have an account yet? Join us
         </Link>
       </View>
     </ThemedView>
