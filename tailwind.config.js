@@ -6,7 +6,11 @@ module.exports = {
     "./<custom folders>/**/*.{js,jsx,ts,tsx}"
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        poppins: ["Poppins", "PoppinsBold", "PoppinsSemiBold"]
+      },
+    },
   },
   plugins: [],
 }
