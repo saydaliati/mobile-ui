@@ -62,7 +62,7 @@ export default function Login() {
   };
 
   return (
-    <ThemedView className="flex-1 h-full dark:bg-black p-6 justify-between items-center">
+    <ThemedView className="flex-1 h-full dark:bg-black p-6 justify-center items-center">
       <Image
         className="w-full h-28"
         source={require("@/assets/images/saydaliyati-logo.png")}
@@ -106,7 +106,7 @@ export default function Login() {
         />
 
         <ThemedView className="flex-row self-end justify-between mt-4">
-          <Link href="/" className="text-[#0EBE8F] font-poppins">
+          <Link href="../forgotPassword" className="text-[#0EBE8F] font-poppins">
             Forgot Password?
           </Link>
         </ThemedView>
