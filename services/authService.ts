@@ -32,6 +32,9 @@ export interface LoginCredentials {
   password: string;
 }
 
+export interface RegisterCredentials extends LoginCredentials {
+  // name: string;
+}
 export interface AuthResponse {
   token: string;
   User: {
@@ -58,6 +61,41 @@ class AuthService {
 
   async logout(): Promise<void> {
     await AsyncStorage.removeItem("auth");
+  }
+
+  async register(credentials: RegisterCredentials): Promise<String> {
+    if(!credentials.email || !credentials.password ){
+      throw new Error("All fields are required");
+    }
+    if(credentials.password.length < 6){
+      throw new Error("Password must be at least 6 characters");
+    }
+
+    try {
+      const response = await api.post<String>("/auth/register", credentials);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(
+          error.response?.data?.message || "An error occurred during registration"
+        );
+      }
+      throw error;
+    }
+  }
+
+  async forgotPassword(email: string): Promise<String> {
+    try {
+      const response = await api.post<String>("/auth/forgot-password", { email });
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(
+          error.response?.data?.message || "An error occurred during forgot password"
+        );
+      }
+      throw error;
+    }
   }
 
   async checkAuth(): Promise<AuthResponse | null> {

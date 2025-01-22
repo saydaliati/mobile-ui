@@ -1,5 +1,5 @@
 import { AppDispatch } from "../store";
-import { authService, LoginCredentials } from "@/services/authService";
+import { authService, LoginCredentials, RegisterCredentials } from "@/services/authService";
 import { setLoading, setError, loginSuccess, logout } from "../slices/authSlice";
 
 export const loginUser = (credentials: LoginCredentials) => {
@@ -21,6 +21,44 @@ export const loginUser = (credentials: LoginCredentials) => {
     }
   };
 };
+
+export const registerUser = (credentials: RegisterCredentials) => {
+  return async (dispatch: AppDispatch) => {
+    try {
+      dispatch(setLoading(true));
+      dispatch(setError(null));
+
+      const response = await authService.register(credentials);
+      return response;
+
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Registration failed";
+      dispatch(setError(errorMessage));
+      throw error;
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
+};
+
+export const ForgotPassword = (email: string) => {
+  return async (dispatch: AppDispatch) => {
+    try {
+      dispatch(setLoading(true));
+      dispatch(setError(null));
+
+      const response = await authService.forgotPassword(email);
+      return response;
+
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Forgot password failed";
+      dispatch(setError(errorMessage));
+      throw error;
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
+}
 
 export const logoutUser = () => {
   return async (dispatch: AppDispatch) => {
