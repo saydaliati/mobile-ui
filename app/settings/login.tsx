@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Image,
-  SafeAreaView,
   Alert,
 } from "react-native";
 import { Link, router } from "expo-router";
@@ -70,7 +69,7 @@ export default function Login() {
       />
 
       <View className="space-y-4 w-full m-4">
-        <ThemedText className="text-2xl dark:text-[#0EBE8F] font-poppins font-bold uppercase text-center">
+        <ThemedText className="text-2xl text-[#0EBE7F]/10 font-poppins font-bold uppercase text-center">
           Welcome back!
         </ThemedText>
         

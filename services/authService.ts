@@ -2,10 +2,14 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 const API_URL = "http://172.16.11.240:3000";
 =======
 const API_URL = "http://192.168.1.161:3000";
 >>>>>>> aee9687 (Authentication System Completed Successfully)
+=======
+const API_URL = "http://172.16.8.26:3000";
+>>>>>>> 37ea5ca (Authentication System Completed)
 
 // Create axios instance
 const api = axios.create({
