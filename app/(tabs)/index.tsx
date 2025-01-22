@@ -1,74 +1,52 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
+// app/(tabs)/homeScreen/Pharmacies.tsx
+import { View,StyleSheet } from 'react-native';
+import React from 'react';
+import CustomTabNavigation from '@/components/CustomTabNavigation';
 import { ThemedView } from '@/components/ThemedView';
+import AllPharmacies from '../+homeScreen/Pharmacies';
+import GuardPharmacies from '../+homeScreen/GuardPharmacies';
 
-export default function HomeScreen() {
+const Pharmacies = () => {
+  const tabs = [
+    {
+      id: 'Pharmacies',
+      label: 'All Pharmacies',
+      content: <AllPharmacies />,
+    },
+    {
+      id: 'GuardPharmacies',
+      label: 'Pharmacy Gard',
+      content: <GuardPharmacies />,
+    },
+  ];
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/Logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText className='text-blue-600 ' type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{''}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText className='text-blue-600'>app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <ThemedView style={styles.container}>
+      <CustomTabNavigation
+        tabs={tabs}
+        activeColor="#4CAF50"
+        inactiveColor="#e0e0e0"
+        textActiveColor="#fff"
+        textInactiveColor="#666"
+        tabContainerStyle={styles.tabContainer}
+        tabTextStyle={styles.tabText}
+      />
+    </ThemedView>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    flex: 1,
+    paddingTop:100
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  tabContainer: {
+    paddingTop: 16,
+    paddingHorizontal: 16,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  tabText: {
+    fontWeight: 'bold',
   },
 });
+
+export default Pharmacies;

@@ -6,21 +6,20 @@ interface FavParmaciesProps {
     image: ImageSourcePropType;
     name: string;
     address: string;
+    handleFavorite: () => void;
 }
 
-const FavParmacies: React.FC<FavParmaciesProps> = ({ image, name, address }) => {
+const FavParmacies: React.FC<FavParmaciesProps> = ({ image, name, address , handleFavorite}) => {
 
-    const [isFavorite, setIsFavorite] = useState(false);
+    const [isFavorite, setIsFavorite] = useState(true);
 
-    const handleFavorite = () => {
-        setIsFavorite(!isFavorite);
-    }
+
 
     return (
         <View className="flex-row items-center bg-[#82e0bf] my-2  rounded-[16px] h-[125px] p-3">
             <View className="flex-row justify-center items-center w-[45px] h-[45px] bg-[#0EBE7F] rounded-full mr-3 ">
                 {/* <Ionicons name="person-outline" color="white" size={24} /> */}
-                <Image source={image} style={{ width: 24, height: 24 }} />
+                <Image source={image} className="w-[45px] h-[45px] rounded-full" />
             </View>
             <View className="flex-row justify-between bg-[#F5F5F5] h-[100px] rounded-[12px] w-[298px] p-3">
                 <View className="flex-col justify-center ">
