@@ -40,7 +40,6 @@ const authSlice = createSlice({
       state.token = token;
       state.loading = false;
       state.error = null;
-      // Persist to AsyncStorage
       AsyncStorage.setItem("auth", JSON.stringify({ User, token }));
     },
     logout: (state) => {
