@@ -3,9 +3,9 @@ import { Tabs } from "expo-router";
 
 export default function TabLayout() {
   return (
-    <Tabs 
-      initialRouteName="index" 
-      screenOptions={{ 
+    <Tabs
+      initialRouteName="index"
+      screenOptions={{
         headerShown: false,
         tabBarStyle: {
           height: 60
@@ -48,13 +48,22 @@ export default function TabLayout() {
           ),
         }}
       />
-      
+
       <Tabs.Screen
         name="homeScreen"
         options={{
-          href: null, 
+          href: null,
+        }}
+      />
+
+       <Tabs.Screen
+        name="pharmacy"
+        options={{
+          href: null,
         }}
       />
     </Tabs>
+
+
   );
 }
