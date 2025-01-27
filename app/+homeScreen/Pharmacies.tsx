@@ -120,7 +120,7 @@ const Pharmacies = () => {
         <FontAwesome
           name="search"
           size={20}
-          color="#0EDE7F"
+          color="#0EBE7F"
           style={styles.icon}
         />
         <TextInput
@@ -138,7 +138,7 @@ const Pharmacies = () => {
           className="mb-3"
           onPress={() => router.push(`/(tabs)/pharmacy/${pharmacy.id}`)}
         >
-          <ThemedView className="bg-[#B7ECD9] dark:bg-[#182020]  rounded-xl p-4 flex-row items-center">
+          <ThemedView className="bg-[#B7ECD9] dark:bg-[#1A1919] shadow-xl rounded-xl p-4 flex-row items-center">
             <Image
               source={{ uri: pharmacy.image }}
               className="w-16 h-16 rounded-full mt-[-15]"

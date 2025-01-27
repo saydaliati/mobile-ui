@@ -47,7 +47,7 @@ export default function FavoritesScreen() {
   return (
     <ThemedView className="p-4">
       <ProfileHeader />
-      <View className="flex-row justify-center items-center h-full w-full bg-[#0EDE7F] dark:bg-gray-800 rounded-lg" >
+      <View className="flex-row justify-center items-center h-full w-full bg-[#0EBE7F] dark:bg-gray-800 rounded-lg" >
         <View className="flex-row justify-center items-center w-[95%] h-[95%] rounded-lg">
         <MapView 
         className="w-full h-full"
