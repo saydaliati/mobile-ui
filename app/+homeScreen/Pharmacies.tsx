@@ -89,7 +89,7 @@ const Pharmacies = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/pharmacy");
+        const response = await axios.get("http://192.168.1.16:3000/pharmacy");
         setPharmacy(response.data);
         setFilteredPharmacies(response.data); 
       } catch (error) {
@@ -114,7 +114,7 @@ const Pharmacies = () => {
 
   return (
     <ScrollView className="p-4" >
-      <View style={styles.container}>
+      <View className="w-full flex-1 flex-row items-center bg-green-800 px-2 rounded-full mb-2" >
         <FontAwesome
           name="search"
           size={20}

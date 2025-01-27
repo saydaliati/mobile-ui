@@ -15,6 +15,8 @@ type SinglePharmacy = {
   openingHours: string;
   isOpen: boolean;
   rating: number;
+  openHours: string;
+  closeHours: string;
   reviews: Array<{
     name: string;
     comment: string;
@@ -30,7 +32,7 @@ const PharmacyDetails = () => {
   useEffect(() => {
     const fetchDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/pharmacy/${id}`);
+        const response = await axios.get(`http://192.168.1.16:3000/pharmacy/${id}`);
         setSinglePharmacy(response.data);
       } catch (err) {
         console.error("Error fetching pharmacy details:", err);
@@ -42,7 +44,7 @@ const PharmacyDetails = () => {
   if (!singlePharmacy) return <Text>Loading...</Text>;
 
 
-  const handlephone = async(phoneNumber)  =>{
+  const handlephone = async(phoneNumber: string)  =>{
     console.log('press', phoneNumber);
     await Linking.openURL(`tel:${phoneNumber}`)
   }
@@ -67,7 +69,7 @@ const PharmacyDetails = () => {
           
           <TouchableOpacity className="flex-row items-center mt-2">
             <FontAwesome name="phone" size={16} color="#0EBE7F" />
-            <Text className="text-[#0EBE7F] ml-2" onPress={()=>handlephone(singlePharmacy.telephone)}>{singlePharmacy.telephone}</Text>
+            <Text className="text-[#0EBE7F] ml-2" onPress={()=>handlephone(singlePharmacy.phone)}>{singlePharmacy.phone}</Text>
           </TouchableOpacity>
 
          
@@ -83,7 +85,7 @@ const PharmacyDetails = () => {
           </View>
 
           <View className="mt-3">
-            {singlePharmacy.status=="open" ? 
+            {singlePharmacy.isOpen ? 
             
             <Text className="bg-[#0EBE7F] text-white px-4 py-1 rounded-full">opened</Text>
             :

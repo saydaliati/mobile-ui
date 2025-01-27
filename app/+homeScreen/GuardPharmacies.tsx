@@ -72,8 +72,8 @@ const GuardPharmacies = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/pharmacy');
-        const openPharmacies = response.data.filter((pharmacy) => pharmacy.status === "open");
+        const response = await axios.get('http://192.168.1.16:3000/pharmacy');
+        const openPharmacies = response.data.filter((pharmacy: any) => pharmacy.status === "open");
         setPharmacy(openPharmacies);
         setFilteredPharmacies(openPharmacies); 
       } catch (error) {
