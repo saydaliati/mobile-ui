@@ -28,9 +28,9 @@ const Pharmacies = () => {
       <CustomTabNavigation
         tabs={tabs}
         activeColor="#0EBE7F"
-        inactiveColor="#e0e0e0"
+        inactiveColor="#0A311D"
         textActiveColor="#fff"
-        textInactiveColor="#666"
+        textInactiveColor="#0EBE7F"
         tabContainerStyle={styles.tabContainer}
         tabTextStyle={styles.tabText}
       />
