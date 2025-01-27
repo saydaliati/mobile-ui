@@ -45,9 +45,9 @@ export default function FavoritesScreen() {
     longitudeDelta: 0.0421,
   };
   return (
-    <ThemedView className="mt-7 px-4">
+    <ThemedView className="p-4">
       <ProfileHeader />
-      <View className="flex-row justify-center items-center h-[90%] my-1 w-full bg-[#80ecbf] rounded-lg" >
+      <View className="flex-row justify-center items-center h-full w-full bg-[#0EDE7F] dark:bg-gray-800 rounded-lg" >
         <View className="flex-row justify-center items-center w-[95%] h-[95%] rounded-lg">
         <MapView 
         className="w-full h-full"

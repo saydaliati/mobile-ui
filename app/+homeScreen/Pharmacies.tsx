@@ -116,7 +116,7 @@ const Pharmacies = () => {
 
   return (
     <ScrollView className="p-4">
-      <View className="w-full flex-1 flex-row items-center bg-[#0A311D] px-2 rounded-full mb-6">
+      <View className="w-full flex-1 flex-row items-center bg-[#0A311D] px-4 rounded-full mb-6">
         <FontAwesome
           name="search"
           size={20}
