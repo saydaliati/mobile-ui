@@ -12,11 +12,13 @@ import { Link, router } from "expo-router";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
-import { loginUser } from "@/store/actions/AuthActions";
+// Import your register action
+import { registerUser } from "@/store/actions/AuthActions";
 
-export default function Login() {
+export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [validationError, setValidationError] = useState("");
 
   const dispatch = useAppDispatch();
@@ -25,8 +27,8 @@ export default function Login() {
   const validateForm = () => {
     setValidationError("");
     
-    if (!email || !password) {
-      setValidationError("Email and password are required");
+    if (!email || !password || !confirmPassword) {
+      setValidationError("All fields are required");
       return false;
     }
 
@@ -43,18 +45,25 @@ export default function Login() {
       return false;
     }
 
+    if (password !== confirmPassword) {
+      setValidationError("Passwords do not match");
+      return false;
+    }
+
     return true;
   };
 
-  const handleLogin = async () => {
+  const handleRegister = async () => {
     if (!validateForm()) return;
 
     try {
-      await dispatch(loginUser({ email, password }));
+      // Uncomment and update with your register action
+      await dispatch(registerUser({ email, password }));
+      Alert.alert("Registration Successful", "Please validate your email to login.");
       router.replace("/(tabs)");
-    } catch (error:any) {
+    } catch (error: any) {
       Alert.alert(
-        "Login Failed",
+        "Registration Failed",
         error.message || "An unexpected error occurred. Please try again."
       );
     }
@@ -69,12 +78,16 @@ export default function Login() {
       />
 
       <View className="space-y-4 w-full m-4">
-        <ThemedText className="text-2xl text-[#0EBE7F]/10 font-poppins font-bold uppercase text-center">
-          Welcome back!
+        <ThemedText className="text-2xl dark:text-[#0EBE8F] font-poppins font-bold uppercase text-center">
+          Join us and get started!
         </ThemedText>
         
         <ThemedText className="dark:text-white font-poppins text-sm text-center">
-          Find pharmacies and access care with Saydaliati!
+          Find on-duty pharmacies near you with ease.
+        </ThemedText>
+
+        <ThemedText className="dark:text-white font-poppins text-sm text-center">
+          #Saydaliati is here for your health!
         </ThemedText>
 
         <TextInput
@@ -104,11 +117,18 @@ export default function Login() {
           editable={!loading}
         />
 
-        <ThemedView className="flex-row self-end justify-between mt-4">
-          <Link href="../forgotPassword" className="text-[#0EBE8F] font-poppins">
-            Forgot Password?
-          </Link>
-        </ThemedView>
+        <TextInput
+          className="w-full px-4 py-3 dark:text-white border border-gray-300 dark:border-gray-700 rounded-lg"
+          placeholder="Confirm Password"
+          placeholderTextColor="#666"
+          value={confirmPassword}
+          onChangeText={(text) => {
+            setConfirmPassword(text);
+            setValidationError("");
+          }}
+          secureTextEntry
+          editable={!loading}
+        />
 
         {(validationError || error) && (
           <Text className="text-red-500 text-center">
@@ -120,20 +140,20 @@ export default function Login() {
           className={`w-full rounded-full py-3 ${
             loading ? "bg-[#0EBE8F]/70" : "bg-[#0EBE8F]"
           }`}
-          onPress={handleLogin}
+          onPress={handleRegister}
           disabled={loading}
         >
           {loading ? (
             <ActivityIndicator color="white" />
           ) : (
-            <Text className="text-white text-center font-semibold">Login</Text>
+            <Text className="text-white text-center font-semibold">Register</Text>
           )}
         </TouchableOpacity>
       </View>
 
       <View className="mb-4">
-        <Link href="./register" className="text-[#0EBE8F] font-poppins">
-          Don't have an account yet? Join us
+        <Link href="./login" className="text-[#0EBE8F] font-poppins">
+          Already have an account? Login
         </Link>
       </View>
     </ThemedView>

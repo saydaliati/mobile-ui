@@ -3,9 +3,9 @@ import { View,StyleSheet } from 'react-native';
 import React from 'react';
 import CustomTabNavigation from '@/components/CustomTabNavigation';
 import { ThemedView } from '@/components/ThemedView';
-import AllPharmacies from '../+homeScreen/Pharmacies';
-import GuardPharmacies from '../+homeScreen/GuardPharmacies';
-
+import AllPharmacies from '../../app/+homeScreen/Pharmacies';
+import GuardPharmacies from '../../app/+homeScreen/GuardPharmacies';
+import ProfileHeader from '@/components/ui/Profile header/profile_header';
 const Pharmacies = () => {
   const tabs = [
     {
@@ -22,12 +22,15 @@ const Pharmacies = () => {
 
   return (
     <ThemedView style={styles.container}>
+      <View className='mt-10 mx-5'>
+      <ProfileHeader />
+      </View>
       <CustomTabNavigation
         tabs={tabs}
-        activeColor="#4CAF50"
-        inactiveColor="#e0e0e0"
+        activeColor="#0EBE7F"
+        inactiveColor="#0A311D"
         textActiveColor="#fff"
-        textInactiveColor="#666"
+        textInactiveColor="#0EBE7F"
         tabContainerStyle={styles.tabContainer}
         tabTextStyle={styles.tabText}
       />
@@ -38,7 +41,8 @@ const Pharmacies = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop:100
+    paddingTop:10,
+    
   },
   tabContainer: {
     paddingTop: 16,

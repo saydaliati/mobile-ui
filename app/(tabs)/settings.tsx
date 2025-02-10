@@ -42,8 +42,8 @@ export default function SettingsScreen() {
              <ThemedText>
                 Appearance
              </ThemedText>
-            <ThemedView className="w-full shadow-sm border border-gray-100/10 rounded-xl">
-              <View className="w-full justify-between flex-row items-center p-4">
+            <ThemedView className="w-full shadow-sm rounded-xl">
+              <View className="w-full justify-between flex-row items-center p-1">
                 <View className="flex-row gap-4 items-center">
                   <View className="rounded-full p-3 bg-[#0EBE7F]/10">
                     <MaterialCommunityIcons
@@ -69,8 +69,8 @@ export default function SettingsScreen() {
             // Authenticated User Settings
             <ThemedView className="space-y-3">
               <Pressable className="active:opacity-80" onPress={handleLogout}>
-                <ThemedView className="w-full shadow-sm border border-gray-100/10 rounded-xl">
-                  <View className="w-full justify-between flex-row items-center p-4">
+                <ThemedView className="w-full shadow-sm rounded-xl">
+                  <View className="w-full justify-between flex-row items-center p-1">
                     <View className="flex-row gap-4 items-center">
                       <View className="rounded-full p-3 bg-[#0EBE7F]/10">
                         <MaterialCommunityIcons
@@ -101,8 +101,8 @@ export default function SettingsScreen() {
               </ThemedText>
               <Link href={"/settings/login"} asChild>
                 <Pressable className="active:opacity-80">
-                  <ThemedView className="w-full shadow-sm border border-gray-100/10 rounded-xl">
-                    <View className="w-full justify-between flex-row items-center p-4">
+                  <ThemedView className="w-full shadow-sm ">
+                    <View className="w-full justify-between flex-row items-center p-1">
                       <View className="flex-row gap-4 items-center">
                         <View className="rounded-full p-3 bg-[#0EBE7F]/10">
                           <MaterialCommunityIcons
@@ -128,8 +128,8 @@ export default function SettingsScreen() {
 
               <Link href={"/settings/register"} asChild>
                 <Pressable className="active:opacity-80 active:text-black">
-                  <ThemedView className="w-full shadow-sm border border-gray-100/10 rounded-xl">
-                    <View className="w-full justify-between flex-row items-center p-4">
+                  <ThemedView className="w-full shadow-sm ">
+                    <View className="w-full justify-between flex-row items-center p-1">
                       <View className="flex-row gap-4 items-center">
                         <View className="rounded-full p-3 bg-[#0EBE7F]/10">
                           <MaterialCommunityIcons

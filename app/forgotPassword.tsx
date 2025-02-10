@@ -12,11 +12,10 @@ import { Link, router } from "expo-router";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
-import { loginUser } from "@/store/actions/AuthActions";
+import { ForgotPassword } from "@/store/actions/AuthActions";
 
-export default function Login() {
+export default function ForgotPasswordScreen() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [validationError, setValidationError] = useState("");
 
   const dispatch = useAppDispatch();
@@ -24,22 +23,12 @@ export default function Login() {
 
   const validateForm = () => {
     setValidationError("");
-    
-    if (!email || !password) {
-      setValidationError("Email and password are required");
-      return false;
-    }
+
 
     // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setValidationError("Please enter a valid email address");
-      return false;
-    }
-
-    // Basic password validation
-    if (password.length < 6) {
-      setValidationError("Password must be at least 6 characters");
       return false;
     }
 
@@ -50,11 +39,12 @@ export default function Login() {
     if (!validateForm()) return;
 
     try {
-      await dispatch(loginUser({ email, password }));
+      await dispatch(ForgotPassword(email));
+      Alert.alert('Success', 'Password reset link sent to your email');
       router.replace("/(tabs)");
     } catch (error:any) {
       Alert.alert(
-        "Login Failed",
+        "An error occurred during forgot password:",
         error.message || "An unexpected error occurred. Please try again."
       );
     }
@@ -69,12 +59,12 @@ export default function Login() {
       />
 
       <View className="space-y-4 w-full m-4">
-        <ThemedText className="text-2xl text-[#0EBE7F]/10 font-poppins font-bold uppercase text-center">
-          Welcome back!
+        <ThemedText className="text-2xl dark:text-[#0EBE8F] font-poppins font-bold uppercase text-center">
+          Forgot your password ?
         </ThemedText>
         
         <ThemedText className="dark:text-white font-poppins text-sm text-center">
-          Find pharmacies and access care with Saydaliati!
+          Please enter your email to receive a recovery link !
         </ThemedText>
 
         <TextInput
@@ -91,24 +81,6 @@ export default function Login() {
           editable={!loading}
         />
 
-        <TextInput
-          className="w-full px-4 py-3 dark:text-white border border-gray-300 dark:border-gray-700 rounded-lg"
-          placeholder="Password"
-          placeholderTextColor="#666"
-          value={password}
-          onChangeText={(text) => {
-            setPassword(text);
-            setValidationError("");
-          }}
-          secureTextEntry
-          editable={!loading}
-        />
-
-        <ThemedView className="flex-row self-end justify-between mt-4">
-          <Link href="../forgotPassword" className="text-[#0EBE8F] font-poppins">
-            Forgot Password?
-          </Link>
-        </ThemedView>
 
         {(validationError || error) && (
           <Text className="text-red-500 text-center">
@@ -126,15 +98,9 @@ export default function Login() {
           {loading ? (
             <ActivityIndicator color="white" />
           ) : (
-            <Text className="text-white text-center font-semibold">Login</Text>
+            <Text className="text-white text-center font-semibold">Send Reset Link</Text>
           )}
         </TouchableOpacity>
-      </View>
-
-      <View className="mb-4">
-        <Link href="./register" className="text-[#0EBE8F] font-poppins">
-          Don't have an account yet? Join us
-        </Link>
       </View>
     </ThemedView>
   );

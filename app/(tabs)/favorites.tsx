@@ -73,14 +73,6 @@ export default function FavoritesScreen() {
           <Ionicons name="search-outline" size={24} color="white" />
           <TextInput placeholder="Search..." style={{ fontSize: 20, width: '90%' }} />
         </View>
-        <View className="flex-row justify-between h-16 mb-5">
-          <TouchableOpacity className="flex-row justify-center items-center w-[170px] my-3 px-4 bg-[#0EBE7F] rounded-full">
-            <Text style={{ color: 'white', fontSize: 20 }}>All Pharmacies</Text>
-          </TouchableOpacity>
-          <TouchableOpacity className="flex-row justify-center items-center w-[170px] my-3 bg-[#82e0bf] rounded-full">
-            <Text style={{ color: '#0EBE7F', fontSize: 20 }}>Phamacy Gard</Text>
-          </TouchableOpacity>
-        </View>
         {
           favorites.length > 0 ?
           favorites.map((favorite: Favorite, index: number) => {
