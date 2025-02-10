@@ -4,216 +4,186 @@ import { View, TouchableOpacity, Text, Alert } from "react-native";
 import MapView, { UrlTile, Marker, Polyline } from "react-native-maps";
 import { useState, useEffect, useRef } from "react";
 import * as Location from "expo-location";
+import axios from "axios";
+import { Double } from "react-native/Libraries/Types/CodegenTypes";
 
-type LocationType = { latitude: number; longitude: number } | null;
-type Pharmacy = { id: string; name: string; latitude: number; longitude: number; };
+type Pharmacy = { id: string; name: string; latitude: Double; longLatitude: Double; };
 
 export default function MapScreen() {
   const mapRef = useRef<MapView | null>(null);
-  const [region, setRegion] = useState({
-    latitude: 0,
-    longitude: 0,
-    latitudeDelta: 0.05,
-    longitudeDelta: 0.05,
-  });
-  const [route, setRoute] = useState(null);
-  const [currentLocation, setCurrentLocation] = useState<LocationType>(null);
   const [pharmacies, setPharmacies] = useState<Pharmacy[]>([]);
+  const [route, setRoute] = useState<any[]>([]); 
+  const [nearestPharmacy, setNearestPharmacy] = useState<Pharmacy | null>(null); 
+
 
   useEffect(() => {
     getCurrentLocation();
   }, []);
 
   useEffect(() => {
-    if (currentLocation) {
-      fetchNearbyPharmacies();
-    }
-  }, [currentLocation]);
+      const fetchPharmacies = async () => {
+        try {
+          const response = await axios.get("http://172.16.10.240:3000/pharmacy");
+          
+          console.log("Pharmacy API Response:", response.data);
+          setPharmacies(response.data);
+        } catch (error) {
+          console.log(`Error fetching pharmacies: ${error}`);
+        }
+      };
+      fetchPharmacies();   
+    
+  }, []);
+
 
   const getCurrentLocation = async () => {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        Alert.alert("Location Permission", "Permission to access location was denied.");
+        Alert.alert("Permission Denied", "Permission to access location was denied");
         return;
       }
 
-      const location = await Location.getCurrentPositionAsync({});
+      const location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+      });
+
       const newLocation = {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
       };
-      
-      setCurrentLocation(newLocation);
-      setRegion({
-        ...newLocation,
-        latitudeDelta: 0.05,
-        longitudeDelta: 0.05,
-      });
+
+      // setCurrentLocation(newLocation);
       mapRef.current?.animateToRegion({
         ...newLocation,
-        latitudeDelta: 0.05,
-        longitudeDelta: 0.05,
-      }, 1000);
+        latitudeDelta: 0.002,
+        longitudeDelta: 0.001,
+      });
+
+      // fetchNearbyPharmacies(newLocation);
     } catch (error) {
-      Alert.alert("Error", "Unable to fetch location. Please try again.");
+      Alert.alert("Location Error", "Unable to fetch location.");
     }
   };
 
-  const fetchNearbyPharmacies = async () => {
-    if (!currentLocation) return;
+  // const fetchNearbyPharmacies = async (location: { latitude: number; longitude: number }) => {
+  //   try {
+  //     // Use the already fetched pharmacies from state
+  //     // findNearestPharmacy(location, pharmacies); // Use the pharmacies state directly
+  //   } catch (error) {
+  //     Alert.alert("Error", "Unable to fetch pharmacies.");
+  //   }
+  // };
 
-    try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?` +
-        `format=json&q=pharmacy&` +
-        `lat=${currentLocation.latitude}&` +
-        `lon=${currentLocation.longitude}&` +
-        `limit=5`
-      );
-      
-      const data = await response.json();
-      const nearbyPharmacies: Pharmacy[] = data.map((place: any, index: number) => ({
-        id: place.place_id.toString(),
-        name: place.display_name.split(',')[0],
-        latitude: parseFloat(place.lat),
-        longitude: parseFloat(place.lon)
-      }));
-      
-      setPharmacies(nearbyPharmacies);
-    } catch (error) {
-      Alert.alert("Error", "Unable to fetch nearby pharmacies.");
-    }
-  };
+  // const findNearestPharmacy = (location: { latitude: number; longitude: number }, pharmacies: Pharmacy[]) => {
+  //   if (pharmacies.length === 0) return;
 
-  const findRouteToNearestPharmacy = async () => {
-    if (!currentLocation || pharmacies.length === 0) {
-      Alert.alert("Error", "Location or pharmacies not available");
-      return;
-    }
+  //   const nearestPharmacy = pharmacies.reduce((nearest, pharmacy) => {
+  //     const distance = calculateDistance(location.latitude, location.longitude, pharmacy.latitude, pharmacy.longLatitude);
+  //     return distance < nearest.distance ? { pharmacy, distance } : nearest;
+  //   }, { pharmacy: pharmacies[0], distance: Infinity }).pharmacy;
 
-    let nearestPharmacy = pharmacies[0];
-    let shortestDistance = calculateDistance(
-      currentLocation.latitude,
-      currentLocation.longitude,
-      pharmacies[0].latitude,
-      pharmacies[0].longitude
-    );
+  //   setNearestPharmacy(nearestPharmacy); // Set the nearest pharmacy in state
 
-    pharmacies.forEach((pharmacy) => {
-      const distance = calculateDistance(
-        currentLocation.latitude,
-        currentLocation.longitude,
-        pharmacy.latitude,
-        pharmacy.longitude
-      );
-      if (distance < shortestDistance) {
-        shortestDistance = distance;
-        nearestPharmacy = pharmacy;
-      }
-    });
+  //   Alert.alert("Nearest Pharmacy", `The nearest pharmacy is ${nearestPharmacy.name}.`, [
+  //     {
+  //       text: "Show Route",
+  //       onPress: () => fetchRoute(location, nearestPharmacy),
+  //     },
+  //     { text: "Cancel", style: "cancel" },
+  //   ]);
+  // };
 
-    try {
-      const response = await fetch(
-        `https://router.project-osrm.org/route/v1/driving/` +
-        `${currentLocation.longitude},${currentLocation.latitude};` +
-        `${nearestPharmacy.longitude},${nearestPharmacy.latitude}` +
-        `?overview=full&geometries=geojson`
-      );
-      
-      const data = await response.json();
-      
-      if (data.routes && data.routes[0]) {
-        setRoute(data.routes[0].geometry.coordinates.map((coord: [number, number]) => ({
-          latitude: coord[1],
-          longitude: coord[0]
-        })));
+  // const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+  //   const R = 6371; // Radius of the Earth in km
+  //   const dLat = (lat2 - lat1) * Math.PI / 180;
+  //   const dLon = (lon2 - lon1) * Math.PI / 180;
+  //   const a =
+  //     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+  //     Math.cos(lat1 * Math.PI / 180) *
+  //     Math.cos(lat2 * Math.PI / 180) *
+  //     Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  //   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  //   return R * c; // Distance in km
+  // };
 
-        const bounds = {
-          latitude: (currentLocation.latitude + nearestPharmacy.latitude) / 2,
-          longitude: (currentLocation.longitude + nearestPharmacy.longitude) / 2,
-          latitudeDelta: Math.abs(currentLocation.latitude - nearestPharmacy.latitude) * 1.5,
-          longitudeDelta: Math.abs(currentLocation.longitude - nearestPharmacy.longitude) * 1.5
-        };
+  // const fetchRoute = async (start: { latitude: number; longitude: number }, destination: Pharmacy) => {
+  //   const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${start.longitude},${start.latitude};${destination.longLatitude},${destination.latitude}?overview=full&geometries=geojson`;
 
-        mapRef.current?.animateToRegion(bounds, 1000);
-        Alert.alert("Route Found", `Route to ${nearestPharmacy.name} (${shortestDistance.toFixed(2)}km away)`);
-      }
-    } catch (error) {
-      Alert.alert("Error", "Unable to find route. Please try again.");
-    }
-  };
+  //   try {
+  //     const response = await fetch(osrmUrl);
+  //     const data = await response.json();
 
-  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
-    const R = 6371;
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(lat1 * Math.PI / 180) *
-      Math.cos(lat2 * Math.PI / 180) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
-  };
+  //     if (data.routes && data.routes[0]) {
+  //       const routeCoords = data.routes[0].geometry.coordinates.map((coord: [number, number]) => ({
+  //         latitude: coord[1],
+  //         longitude: coord[0],
+  //       }));
+
+  //       setRoute(routeCoords);
+  //       // Alert.alert("Route Found", `Route to ${destination.name} found.`);
+  //     } else {
+  //       Alert.alert("OSRM Error", "No route found.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Route fetch error:", error);
+  //     Alert.alert("Network Error", "Unable to fetch route. Check your connection.");
+  //   }
+  // };
 
   return (
-    <ThemedView className="mt-7 px-4">
-      <ProfileHeader />
-      <View className="flex-row justify-center items-center h-[70%] my-1 w-full bg-[#80ecbf] rounded-lg">
-        <View className="flex-row justify-center items-center w-[95%] h-[95%] rounded-lg">
-          <MapView
-            ref={mapRef}
-            style={{ flex: 1, width: "100%", height: "100%" }}
-            region={region}
-            onRegionChangeComplete={setRegion}
-          >
-            <UrlTile
-              urlTemplate="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              maximumZ={19}
-              flipY={false}
-            />
-            {currentLocation && (
-              <Marker
-                coordinate={currentLocation}
-                title="You are here"
-                description="Current location"
-              />
-            )}
-            {pharmacies.map((pharmacy) => (
-              <Marker
-                key={pharmacy.id}
-                coordinate={{
-                  latitude: pharmacy.latitude,
-                  longitude: pharmacy.longitude,
-                }}
-                title={pharmacy.name}
-              />
-            ))}
-            {route && (
-              <Polyline
-                coordinates={route}
-                strokeColor="#000"
-                strokeWidth={3}
-              />
-            )}
-          </MapView>
-        </View>
-      </View>
-      <View className="flex-row justify-center items-center h-16 mb-5">
-        <TouchableOpacity 
-          className="bg-teal-500 p-2 rounded flex-1 mx-1" 
-          onPress={getCurrentLocation}
+    <View style={{ flex: 1 }}>
+      <MapView
+        ref={mapRef}
+        style={{ flex: 1 }}
+        showsUserLocation
+      >
+        
+        {/* {pharmacies.map((pharmacy) => (
+          <Marker
+            key={pharmacy.id}
+            coordinate={{
+              latitude: pharmacy.latitude,
+              longitude: pharmacy.longLatitude,
+            }}
+            title={pharmacy.name}
+          />
+        ))}  */}
+        {/* Nearest pharmacy marker */}
+        {/* {nearestPharmacy && (
+          <Marker
+            coordinate={{
+              latitude: nearestPharmacy.latitude,
+              longitude: nearestPharmacy.longLatitude,
+            }}
+            title={nearestPharmacy.name}
+            pinColor="blue" // Change color to differentiate
+          />
+        )} */}
+        {/* Polyline for the route */}
+        {/* {route.length > 0 && (
+          <Polyline
+            coordinates={route}
+            strokeColor="red"
+            strokeWidth={6}
+            lineDashPattern={[1, 1]}
+          />
+        )} */}
+      </MapView>
+      <View style={{ flexDirection: 'row', justifyContent: 'center', padding: 10 }}>
+        <TouchableOpacity
+          style={{ backgroundColor: 'teal', padding: 10, borderRadius: 5, margin: 5 }}
+          // onPress={getCurrentLocation}
         >
-          <Text className="text-white text-center font-bold">Current Location</Text>
+          <Text style={{ color: 'white' }}>Current Location</Text>
         </TouchableOpacity>
-        <TouchableOpacity 
-          className="bg-teal-500 p-2 rounded flex-1 mx-1" 
-          onPress={findRouteToNearestPharmacy}
+        <TouchableOpacity
+          style={{ backgroundColor: 'teal', padding: 10, borderRadius: 5, margin: 5 }}
+          
         >
-          <Text className="text-white text-center font-bold">Find Route</Text>
+          <Text style={{ color: 'white' }}>Find Nearest Pharmacy</Text>
         </TouchableOpacity>
       </View>
-    </ThemedView>
+    </View>
   );
 }
